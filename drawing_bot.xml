@@ -1,0 +1,53 @@
+<mujoco model="refined_drawing_bot">
+    <compiler angle="degree" coordinate="local" inertiafromgeom="true"/>
+    <option timestep="0.0005" iterations="200" solver="Newton" tolerance="1e-12"/>
+
+    <default>
+        <joint damping="5.0" armature="0.1" frictionloss="0.2" limited="true"/>
+        <geom mass="0.2" rgba="0.8 0.8 0.8 1" type="capsule" contype="0" conaffinity="0"/>
+    </default>
+
+    <worldbody>
+        <light directional="true" diffuse=".8 .8 .8" pos="0 0 5" dir="0 0 -1"/>
+        <geom name="table" type="plane" size="0.8 0.8 0.01" rgba="0.9 0.9 0.9 1"/>
+
+        <body name="hip_left" pos="-0.075 0 0.05">
+            <geom type="box" size="0.02 0.02 0.02" rgba="0.1 0.1 0.1 1" contype="1" conaffinity="1"/>
+            <body name="thigh_left" pos="0 0 0.02">
+                <joint name="motor_left" type="hinge" axis="0 0 1" range="-120 120"/> 
+                <geom fromto="0 0 0 0 0.15 0" size="0.01"/> 
+                <body name="shin_left" pos="0 0.15 0">
+                    <joint name="knee_left" type="hinge" axis="0 0 1" range="-150 150"/>
+                    <geom fromto="0 0 0 0 0.27 0" size="0.008"/> 
+                    <site name="toe_left" pos="0 0.27 0" size="0.006" rgba="1 0 0 1"/>
+                </body>
+            </body>
+        </body>
+
+        <body name="hip_right" pos="0.075 0 0.05">
+            <geom type="box" size="0.02 0.02 0.02" rgba="0.1 0.1 0.1 1" contype="1" conaffinity="1"/>
+            <body name="thigh_right" pos="0 0 0.04">
+                <joint name="motor_right" type="hinge" axis="0 0 -1" range="-120 120"/> 
+                <geom fromto="0 0 0 0 0.15 0" size="0.01"/>
+                <body name="shin_right" pos="0 0.15 0">
+                    <joint name="knee_right" type="hinge" axis="0 0 -1" range="-150 150"/>
+                    <geom fromto="0 0 0 0 0.27 0" size="0.008"/>
+                    <body name="pencil_ee" pos="0 0.27 0">
+                        <site name="toe_right" pos="0 0 0" size="0.006" rgba="0 0 1 1"/>
+                        <geom type="cylinder" size="0.003 0.05" pos="0 0 -0.05" rgba="0 0.8 0 1"/>
+                        <site name="pencil_point" pos="0 0 -0.05" size="0.003" rgba="0 1 0 1"/>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <equality>
+        <connect name="foot_joint" active="true" site1="toe_left" site2="toe_right" solimp="0.99 0.99 0.01" solref="0.001 1"/>
+    </equality>
+
+    <actuator>
+        <position name="servo_l" joint="motor_left" kp="100" ctrlrange="-120 120"/>
+        <position name="servo_r" joint="motor_right" kp="100" ctrlrange="-120 120"/>
+    </actuator>
+</mujoco>
