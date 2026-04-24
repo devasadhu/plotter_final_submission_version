@@ -1,6 +1,0 @@
-mujoco
-numpy
-opencv-python
-PyMuPDF
-flask
-flask-cors
